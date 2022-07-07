@@ -1,5 +1,5 @@
 {
-    "name": "amboss-mededu/php-pact-verifier",
+    "name": "amboss/php-pact-verifier",
     "description": "Php Pact verifier",
     "type": "library",
     "autoload": {
