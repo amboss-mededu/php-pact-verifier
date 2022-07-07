@@ -1,0 +1,21 @@
+{
+    "name": "amboss-mededu/php-pact-verifier",
+    "description": "Php Pact verifier",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Amboss\\Pact\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Miguel Alcaino",
+            "email": "miguel.alcaino@ogb.cl"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "guzzlehttp/guzzle": "^7.3",
+        "jms/serializer": "^3.17"
+    }
+}
