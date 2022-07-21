@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Amboss\Pact;
 
+use Amboss\Pact\Exception\ConsumerNotFound;
+use Amboss\Pact\Exception\ProviderOrConsumerOrVersionNotFoundException;
 use Amboss\Pact\Requester\PactsClient;
 use Exception;
-use LogicException;
+use GuzzleHttp\Exception\ClientException;
 
 class Verifier
 {
@@ -25,8 +27,19 @@ class Verifier
             $version = $this->getLatestConsumerVersion($consumerName);
         }
 
-        $pactResponse = $this->pactsClient->getPact($verifierConfig->getProviderName(), $consumerName, $version);
-        $success      = true;
+        $providerName = $verifierConfig->getProviderName();
+
+        try {
+            $pactResponse = $this->pactsClient->getPact($providerName, $consumerName, $version);
+        } catch (ClientException $exception) {
+            if ($exception->getCode() === 404) {
+                throw new ProviderOrConsumerOrVersionNotFoundException(sprintf('The combination Consumer: %s, Provider: %s and Version: %s has not been found.', $consumerName, $providerName, $version));
+            }
+
+            throw $exception;
+        }
+
+        $success = true;
         try {
             $callable($pactResponse->getInteractions());
         } catch (Exception $exception) {
@@ -50,6 +63,6 @@ class Verifier
             }
         }
 
-        throw new LogicException('Consumer not found');
+        throw new ConsumerNotFound(sprintf('Consumer %s not found', $consumerName));
     }
 }
